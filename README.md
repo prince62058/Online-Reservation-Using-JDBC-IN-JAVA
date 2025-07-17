@@ -9,3 +9,16 @@ Login Form – To access this Online Reservation System, each user should have a
 Reservation System – Under reservation form users will have to fill the necessary details such as their basic details, train number, train name will automatically come in the box, class type, date of journey, from (place) to destination and after that, users will have to press insert button.
 
 Cancellation Form – If passengers want to cancel their tickets then they have to provide their PNR number and after submitting it, this will display the entire information related to that particular PNR number. If users want to confirm their cancellation, in this case they have to press Ok Button
+
+
+SQL Query
+
+CREATE TABLE reservation (
+    pnr_number VARCHAR(30) UNIQUE,
+    passenger_name VARCHAR(30) NOT NULL,
+    train_number VARCHAR(30) NOT NULL,
+    class_type VARCHAR(30) NOT NULL,
+    journey_date VARCHAR(30) NOT NULL,
+    from_location VARCHAR(30) NOT NULL,
+    to_location VARCHAR(36) NOT NULL
+);
