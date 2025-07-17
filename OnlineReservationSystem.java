@@ -1,163 +1,194 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.*;
 import java.util.Scanner;
+import java.util.Random;
 
-public class OnlineReservationSystem {
-    private Map<String, String> users; // Store username-password pairs
-    private Map<String, String> reservations; // Store reservation data
+public class Online_Reservation_System {
+    private static final int min = 1000;
+    private static final int max = 9999;
 
-    public OnlineReservationSystem() {
-        users = new HashMap<>();
-        reservations = new HashMap<>();
-    }
-
-    public void run() {
+    public static class User {
+        private String username;
+        private String password;
         Scanner sc = new Scanner(System.in);
 
-        while (true) {
-            System.out.println("------------------------------------------------");
-            System.out.println("----- WELCOME TO ONLINE RESERVATION SYSTEM -----");
-            System.out.println("------------------------------------------------");
-            System.out.println("Please Select One Options..." + "\n");
-            System.out.println("1.>>> Register >>>");
-            System.out.println("2.>>> Login >>>");
-            System.out.println("3.>>> Exit >>>");
-            System.out.println("------------------------------------------------");
-            System.out.print("Enter your choice: ");
+        public User() {}
 
-            int choice = sc.nextInt();
-                    
-            sc.nextLine();
+        public String getUsername() {
+            System.out.print("Enter Username: ");
+            username = sc.nextLine();
+            return username;
+        }
 
-            switch (choice) {
-                case 1:
-                    register(sc);
-                    break;
-                case 2:
-                    login(sc);
-                    break;
-                case 3:
-                    System.out.println("------------------------------------------------");
-                    System.out.println("\n" + "Exiting...");
-                    System.out.println("\n" + "------------------------------------------------");
-                    System.out.println("\n" + "Thank You.!!! Please Visit Again...");
-                    System.out.println("\n" + "------------------------------------------------");
-                    return;
-                default:
-                    System.out.println("------------------------------------------------");
-                    System.out.println("\n" + "Invalid choice... Please Try again...");
-                    break;
-            }
-
-            System.out.println();
+        public String getPassword() {
+            System.out.print("Enter Password: ");
+            password = sc.nextLine();
+            return password;
         }
     }
 
-    private void register(Scanner sc) {
-        System.out.println("------------------------------------------------");
-        System.out.println("--------------- REGISTRATION PAGE --------------");
-        System.out.println("------------------------------------------------");
-        System.out.print("Enter username: ");
-        String username = sc.nextLine();
+    public static class PnrRecord {
+        private int pnrNumber;
+        private String passengerName;
+        private String trainNumber;
+        private String classType;
+        private String journeyDate;
+        private String from;
+        private String to;
 
-        if (users.containsKey(username)) {
-            System.out.println("\n" + "Username already exists... Try again...");
-            return;
+        Scanner sc = new Scanner(System.in);
+
+        public int getPnrNumber() {
+            Random random = new Random();
+            pnrNumber = random.nextInt(max - min + 1) + min;
+            return pnrNumber;
         }
 
-        System.out.print("Enter password: ");
-        String password = sc.nextLine();
-        users.put(username, password);
-        System.out.println("\n" + "Registration successful... You can now log in...");
-    }
-
-    private void login(Scanner sc) {
-        System.out.println("------------------------------------------------");
-        System.out.println("------------------ LOGIN PAGE ------------------");
-        System.out.println("------------------------------------------------");
-        System.out.print("Enter username: ");
-        String username = sc.nextLine();
-        System.out.print("Enter password: ");
-        String password = sc.nextLine();
-
-        if (users.containsKey(username) && users.get(username).equals(password)) {
-            System.out.println("\n" + "Login successful...");
-            reservationMenu(sc, username);
-        } else {
-            System.out.println("\n" + "Invalid username or password...");
-        }
-    }
-
-    private void reservationMenu(Scanner sc, String username) {
-        while (true) {
-            System.out.println("------------------------------------------------");
-            System.out.println("------------------- HOME PAGE ------------------");
-            System.out.println("------------------------------------------------");
-            System.out.println("Please Select One Options..." + "\n");
-            System.out.println("1.>>> Make a reservation >>>");
-            System.out.println("2.>>> Cancel a reservation >>>");
-            System.out.println("3.>>> Logout");
-            System.out.println("------------------------------------------------");
-            System.out.print("Enter your choice: ");
-
-            int choice = sc.nextInt();
-            sc.nextLine();
-
-            switch (choice) {
-                case 1:
-                    makeReservation(sc, username);
-                    break;
-                case 2:
-                    cancelReservation(sc, username);
-                    break;
-                case 3:
-                    System.out.println("------------------------------------------------");
-                    System.out.println("\n" + "Logging out...");
-                    return;
-                default:
-                    System.out.println("------------------------------------------------");
-                    System.out.println("\n" + "Invalid choice. Try again.");
-                    break;
-            }
-
-            System.out.println();
-        }
-    }
-
-    private void makeReservation(Scanner sc, String username) {
-        System.out.println("------------------------------------------------");
-        System.out.print("Enter reservation details: ");
-        String reservationDetails = sc.nextLine();
-
-        if (reservations.containsKey(username)) {
-            System.out.println("\n" + "You already have a reservation. Cancel it first to make a new one...");
-            return;
+        public String getPassengerName() {
+            System.out.print("Enter the passenger name: ");
+            passengerName = sc.nextLine();
+            return passengerName;
         }
 
-        reservations.put(username, reservationDetails);
-        System.out.println("\n" + "Reservation created successfully...");
-    }
+        public String getTrainNumber() {
+            System.out.print("Enter the train number: ");
+            trainNumber = sc.nextLine();
+            return trainNumber;
+        }
 
-    private void cancelReservation(Scanner sc, String username) {
-        if (reservations.containsKey(username)) {
-            System.out.println("------------------------------------------------");
-            System.out.println("Your current reservation: " + reservations.get(username));
-            System.out.print("Do you want to cancel this reservation? (Y/N): ");
-            String confirmation = sc.nextLine();
+        public String getClassType() {
+            System.out.print("Enter the class type: ");
+            classType = sc.nextLine();
+            return classType;
+        }
 
-            if (confirmation.equalsIgnoreCase("Y")) {
-                reservations.remove(username);
-                System.out.println("\n" + "Reservation cancelled successfully...");
-            } else {
-                System.out.println("\n" + "Reservation not cancelled...");
-            }
-        } else {
-            System.out.println("\n" + "You don't have any reservations...");
+        public String getJourneyDate() {
+            System.out.print("Enter the journey date as 'YYYY-MM-DD': ");
+            journeyDate = sc.nextLine();
+            return journeyDate;
+        }
+
+        public String getFrom() {
+            System.out.print("Enter the starting place: ");
+            from = sc.nextLine();
+            return from;
+        }
+
+        public String getTo() {
+            System.out.print("Enter the destination place: ");
+            to = sc.nextLine();
+            return to;
         }
     }
 
     public static void main(String[] args) {
-        OnlineReservationSystem system = new OnlineReservationSystem();
-        system.run();
+        Scanner sc = new Scanner(System.in);
+        User u1 = new User();
+        String username = u1.getUsername();
+        String password = u1.getPassword();
+
+        String url = "jdbc:mysql://127.0.0.1:3306/Prince"; // Update DB name if needed
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            try (Connection connection = DriverManager.getConnection(url, username, password)) {
+                System.out.println("User Connection Granted.\n");
+
+                while (true) {
+                    System.out.println("Enter the choice:");
+                    System.out.println("1. Insert Record");
+                    System.out.println("2. Delete Record");
+                    System.out.println("3. Show All Records");
+                    System.out.println("4. Exit");
+
+                    int choice = sc.nextInt();
+                    sc.nextLine(); // consume newline
+
+                    String insertQuery = "INSERT INTO reservation VALUES (?, ?, ?, ?, ?, ?, ?)";
+                    String deleteQuery = "DELETE FROM reservation WHERE pnr_number = ?";
+                    String showQuery = "SELECT * FROM reservation";
+
+                    if (choice == 1) {
+                        PnrRecord p1 = new PnrRecord();
+                        int pnr_number = p1.getPnrNumber();
+                        String passengerName = p1.getPassengerName();
+                        String trainNumber = p1.getTrainNumber();
+                        String classType = p1.getClassType();
+                        String journeyDate = p1.getJourneyDate();
+                        String from = p1.getFrom();
+                        String to = p1.getTo();
+
+                        try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
+                            preparedStatement.setInt(1, pnr_number);
+                            preparedStatement.setString(2, passengerName);
+                            preparedStatement.setString(3, trainNumber);
+                            preparedStatement.setString(4, classType);
+                            preparedStatement.setString(5, journeyDate);
+                            preparedStatement.setString(6, from);
+                            preparedStatement.setString(7, to);
+
+                            int rowsAffected = preparedStatement.executeUpdate();
+                            if (rowsAffected > 0) {
+                                System.out.println("Record added successfully.");
+                            } else {
+                                System.out.println("No records were added.");
+                            }
+                        } catch (SQLException e) {
+                            System.err.println("SQLException: " + e.getMessage());
+                        }
+                    } else if (choice == 2) {
+                        System.out.print("Enter the PNR number to delete the record: ");
+                        int pnrNumber = sc.nextInt();
+
+                        try (PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery)) {
+                            preparedStatement.setInt(1, pnrNumber);
+                            int rowsAffected = preparedStatement.executeUpdate();
+                            if (rowsAffected > 0) {
+                                System.out.println("Record deleted successfully.");
+                            } else {
+                                System.out.println("No records were deleted.");
+                            }
+                        } catch (SQLException e) {
+                            System.err.println("SQLException: " + e.getMessage());
+                        }
+                    } else if (choice == 3) {
+                        try (PreparedStatement preparedStatement = connection.prepareStatement(showQuery);
+                             ResultSet resultSet = preparedStatement.executeQuery()) {
+                            System.out.println("\nAll records printing:\n");
+                            while (resultSet.next()) {
+                                String pnr = resultSet.getString("pnr_number");
+                                String name = resultSet.getString("passenger_name");
+                                String train = resultSet.getString("train_number");
+                                String cls = resultSet.getString("class_type");
+                                String date = resultSet.getString("journey_date");
+                                String fromLoc = resultSet.getString("from_location");
+                                String toLoc = resultSet.getString("to_location");
+
+                                System.out.println("PNR Number: " + pnr);
+                                System.out.println("Passenger Name: " + name);
+                                System.out.println("Train Number: " + train);
+                                System.out.println("Class Type: " + cls);
+                                System.out.println("Journey Date: " + date);
+                                System.out.println("From Location: " + fromLoc);
+                                System.out.println("To Location: " + toLoc);
+                                System.out.println("--------------");
+                            }
+                        } catch (SQLException e) {
+                            System.err.println("SQLException: " + e.getMessage());
+                        }
+                    } else if (choice == 4) {
+                        System.out.println("Exiting the program.");
+                        break;
+                    } else {
+                        System.out.println("Invalid Choice Entered.");
+                    }
+                }
+            } catch (SQLException e) {
+                System.err.println("SQLException: " + e.getMessage());
+            }
+        } catch (ClassNotFoundException e) {
+            System.err.println("Error loading JDBC driver: " + e.getMessage());
+        }
+
+        sc.close();
     }
 }
